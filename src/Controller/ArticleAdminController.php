@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Article;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\ArticleRepository;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+
 class ArticleAdminController extends AbstractController
 {
     /**
@@ -24,12 +26,22 @@ class ArticleAdminController extends AbstractController
 
          $form->handleRequest($request);
 
+
+
          if ($form->isSubmitted() && $form->isValid()) {
 
-             
+              $file=$form->get('image')->getData();
+              $fileName=time().$file->getClientOriginalName();
+
+              $file->move(
+
+                    $this->getParameter('video_directory'),
+                    $fileName
+
+                     );
               $article=$form->getData();
 
-
+            $article->setImage($fileName);
                 
              $em->persist($article);
              $em->flush();
